@@ -4,6 +4,11 @@
     <configurations>
       <configuration name="StorkSceneGraph" target-platform="Desktop" pure-as="true" output-type="Library" output-file="StorkSceneGraph.swc" output-folder="$MODULE_DIR$/../StorkTest/out">
         <dependencies target-player="12.0">
+          <entries>
+            <entry library-id="0f61ce8d-bde5-4c39-9b0a-d77913db3f02">
+              <dependency linkage="Test" />
+            </entry>
+          </entries>
           <sdk name="AIR SDK 4.0" />
         </dependencies>
         <compiler-options />
@@ -18,9 +23,20 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/srcTest" isTestSource="true" />
     </content>
     <orderEntry type="jdk" jdkName="AIR SDK 4.0" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="0f61ce8d-bde5-4c39-9b0a-d77913db3f02" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/flexunit-4.1.0-8-as3_4.1.0.16076.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

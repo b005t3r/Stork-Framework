@@ -71,7 +71,7 @@ public class ContainerNode extends Node {
             if(sceneNode) {
                 var container:ContainerNode = child as ContainerNode;
 
-                if(container != null)  container.broadcastEvent(_removedFromStageEvent);
+                if(container != null)   container.broadcastEvent(_removedFromStageEvent);
                 else                    child.dispatchEvent(_removedFromStageEvent);
             }
 
