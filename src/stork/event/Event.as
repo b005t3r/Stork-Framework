@@ -12,9 +12,9 @@ use namespace stork_internal;
 
 public class Event {
     public static const ADDED_TO_PARENT:String      = "addedToParentNode";
-    public static const ADDED_TO_STAGE:String       = "addedToSceneNode";
-
     public static const REMOVED_FROM_PARENT:String  = "removedFromParentNode";
+
+    public static const ADDED_TO_STAGE:String       = "addedToSceneNode";
     public static const REMOVED_FROM_STAGE:String   = "removedFromSceneNode";
 
     private var _target:IEventDispatcher;

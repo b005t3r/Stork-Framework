@@ -10,8 +10,9 @@ public class ContainerNode extends Node {
     private static var _broadcastListeners:Vector.<Node> = new <Node>[];
 
     private var _addedToStageEvent:Event        = new Event(Event.ADDED_TO_STAGE);
-    private var _addedToParentEvent:Event       = new Event(Event.ADDED_TO_PARENT, true);
     private var _removedFromStageEvent:Event    = new Event(Event.REMOVED_FROM_STAGE);
+
+    private var _addedToParentEvent:Event       = new Event(Event.ADDED_TO_PARENT, true);
     private var _removedFromParentEvent:Event   = new Event(Event.REMOVED_FROM_PARENT, true);
 
     private var _nodes:Vector.<Node>            = new <Node>[];
