@@ -14,8 +14,8 @@ public class Event {
     public static const ADDED_TO_PARENT:String      = "addedToParentNode";
     public static const REMOVED_FROM_PARENT:String  = "removedFromParentNode";
 
-    public static const ADDED_TO_STAGE:String       = "addedToSceneNode";
-    public static const REMOVED_FROM_STAGE:String   = "removedFromSceneNode";
+    public static const ADDED_TO_SCENE:String       = "addedToSceneNode";
+    public static const REMOVED_FROM_SCENE:String   = "removedFromSceneNode";
 
     private var _target:IEventDispatcher;
     private var _currentTarget:IEventDispatcher;

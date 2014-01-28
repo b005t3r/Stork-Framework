@@ -9,8 +9,8 @@ import stork.event.Event;
 public class ContainerNode extends Node {
     private static var _broadcastListeners:Vector.<Node> = new <Node>[];
 
-    private var _addedToStageEvent:Event        = new Event(Event.ADDED_TO_STAGE);
-    private var _removedFromStageEvent:Event    = new Event(Event.REMOVED_FROM_STAGE);
+    private var _addedToSceneEvent:Event        = new Event(Event.ADDED_TO_SCENE);
+    private var _removedFromSceneEvent:Event    = new Event(Event.REMOVED_FROM_SCENE);
 
     private var _addedToParentEvent:Event       = new Event(Event.ADDED_TO_PARENT, true);
     private var _removedFromParentEvent:Event   = new Event(Event.REMOVED_FROM_PARENT, true);
@@ -47,8 +47,8 @@ public class ContainerNode extends Node {
                 if(sceneNode) {
                     var container:ContainerNode = node as ContainerNode;
 
-                    if(container != null)   container.broadcastEvent(_addedToStageEvent);
-                    else                    node.dispatchEvent(_addedToStageEvent);
+                    if(container != null)   container.broadcastEvent(_addedToSceneEvent);
+                    else                    node.dispatchEvent(_addedToSceneEvent);
                 }
             }
         }
@@ -72,8 +72,8 @@ public class ContainerNode extends Node {
             if(sceneNode) {
                 var container:ContainerNode = child as ContainerNode;
 
-                if(container != null)   container.broadcastEvent(_removedFromStageEvent);
-                else                    child.dispatchEvent(_removedFromStageEvent);
+                if(container != null)   container.broadcastEvent(_removedFromSceneEvent);
+                else                    child.dispatchEvent(_removedFromSceneEvent);
             }
 
             child.setParentNode(null);

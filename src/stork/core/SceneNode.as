@@ -6,7 +6,8 @@
 package stork.core {
 
 public class SceneNode extends ContainerNode{
-    public function SceneNode() {
+    public function SceneNode(name:String = "SceneNode") {
+        super(name);
     }
 }
 }

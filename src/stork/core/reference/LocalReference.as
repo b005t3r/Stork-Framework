@@ -7,8 +7,8 @@ package stork.core.reference {
 import stork.core.Node;
 import stork.event.Event;
 
-public class SiblingReference extends Reference {
-    public function SiblingReference(referencing:Node, propertyName:String, path:String) {
+public class LocalReference extends Reference {
+    public function LocalReference(referencing:Node, propertyName:String, path:String) {
         super(referencing, propertyName, path);
 
         if(_referencing.parentNode == null) {
@@ -31,6 +31,15 @@ public class SiblingReference extends Reference {
     }
 
     override public function dispose():void {
+        _referencing.removeEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
+        _referencing.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencingRemovedFromParent);
+
+        if(_referencing.parentNode != null)
+            _referencing.parentNode.removeEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+
+        if(_referenced != null)
+            _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+
         super.dispose();
     }
 
@@ -66,8 +75,6 @@ public class SiblingReference extends Reference {
         }
 
         _referencing.addEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
-
-
     }
 
     private function onSomethingAddedToParent(event:Event):void {
