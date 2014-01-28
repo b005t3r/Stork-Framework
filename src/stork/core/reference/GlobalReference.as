@@ -95,9 +95,20 @@ public class GlobalReference extends Reference {
 
     private function onReferencedRemovedFromScene(event:Event):void {
         _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+
+        var sceneNode:SceneNode = _referencing.sceneNode;
+        var node:Node           = findReferencedNode(sceneNode);
+
         setReferenced(null);
 
-        _referencing.sceneNode.addEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToScene);
+        if(node == null) {
+            sceneNode.addEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToScene);
+        }
+        else {
+            setReferenced(node);
+
+            node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+        }
     }
 }
 }

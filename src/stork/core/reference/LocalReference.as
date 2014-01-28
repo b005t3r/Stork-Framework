@@ -98,9 +98,19 @@ public class LocalReference extends Reference {
             return;
 
         _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+
+        var node:Node = findReferencedNode(_referencing.parentNode);
+
         setReferenced(null);
 
-        _referencing.parentNode.addEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+        if(node == null) {
+            _referencing.parentNode.addEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+        }
+        else {
+            setReferenced(node);
+
+            node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+        }
     }
 }
 }

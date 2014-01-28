@@ -39,6 +39,13 @@ public class Event {
     /** Returns a description of the event, containing type and bubble information. */
     public function toString():String { return "[" + getQualifiedClassName(this).split("::").pop() + " type=\"" + _type + "\" bubbles=" + _bubbles + "]"; }
 
+    public function reset():Event {
+        _target = _currentTarget = null;
+        _stopsPropagation = _stopsImmediatePropagation = false;
+
+        return this;
+    }
+
     /** Indicates if event will bubble. */
     public function get bubbles():Boolean { return _bubbles; }
 
@@ -58,14 +65,5 @@ public class Event {
 
     internal function get stopsPropagation():Boolean { return _stopsPropagation; }
     internal function get stopsImmediatePropagation():Boolean { return _stopsImmediatePropagation; }
-
-    // event pooling
-
-    stork_internal function reset():Event {
-        _target = _currentTarget = null;
-        _stopsPropagation = _stopsImmediatePropagation = false;
-
-        return this;
-    }
 }
 }

@@ -12,26 +12,26 @@ import stork.core.stork_internal;
 use namespace stork_internal;
 
 public class EventDispatcher implements IEventDispatcher {
-    private static var sBubbleChains:Array = [];
+    private static var _bubbleChains:Array = [];
 
-    private var mEventListeners:Dictionary;
+    private var _eventListeners:Dictionary;
 
     public function addEventListener(type:String, listener:Function):void {
-        if(mEventListeners == null)
-            mEventListeners = new Dictionary();
+        if(_eventListeners == null)
+            _eventListeners = new Dictionary();
 
-        var listeners:Vector.<Function> = mEventListeners[type] as Vector.<Function>;
+        var listeners:Vector.<Function> = _eventListeners[type] as Vector.<Function>;
         if(listeners == null)
-            mEventListeners[type] = new <Function>[listener];
+            _eventListeners[type] = new <Function>[listener];
         else if(listeners.indexOf(listener) == -1) // check for duplicates
             listeners[listeners.length] = listener;
     }
 
     public function removeEventListener(type:String, listener:Function):void {
-        if(mEventListeners == null)
+        if(_eventListeners == null)
             return;
 
-        var listeners:Vector.<Function> = mEventListeners[type] as Vector.<Function>;
+        var listeners:Vector.<Function> = _eventListeners[type] as Vector.<Function>;
 
         if(listeners == null)
             return;
@@ -44,23 +44,23 @@ public class EventDispatcher implements IEventDispatcher {
             if(otherListener != listener) remainingListeners[remainingListeners.length] = otherListener;
         }
 
-        mEventListeners[type] = remainingListeners;
+        _eventListeners[type] = remainingListeners;
     }
 
     public function removeEventListeners(type:String = null):void {
-        if(type && mEventListeners)
-            delete mEventListeners[type];
+        if(type && _eventListeners)
+            delete _eventListeners[type];
         else
-            mEventListeners = null;
+            _eventListeners = null;
     }
 
     public function dispatchEvent(event:Event):void {
         var bubbles:Boolean = event.bubbles;
 
-        if(!bubbles && (mEventListeners == null || !(event.type in mEventListeners)))
+        if(!bubbles && (_eventListeners == null || !(event.type in _eventListeners)))
             return; // no need to do anything
 
-        event.stork_internal::reset();
+        //event.stork_internal::reset();
 
         // we save the current target and restore it later;
         // this allows users to re-dispatch events without creating a clone.
@@ -75,8 +75,8 @@ public class EventDispatcher implements IEventDispatcher {
     }
 
     public function hasEventListener(type:String):Boolean {
-        var listeners:Vector.<Function> = mEventListeners != null
-            ? mEventListeners[type] as Vector.<Function>
+        var listeners:Vector.<Function> = _eventListeners != null
+            ? _eventListeners[type] as Vector.<Function>
             : null
         ;
 
@@ -88,8 +88,8 @@ public class EventDispatcher implements IEventDispatcher {
      * does it back-up and restore the previous target on the event. The 'dispatchEvent'
      * method uses this method internally. */
     internal function invokeEvent(event:Event):Boolean {
-        var listeners:Vector.<Function> = mEventListeners ?
-            mEventListeners[event.type] as Vector.<Function> : null;
+        var listeners:Vector.<Function> = _eventListeners ?
+            _eventListeners[event.type] as Vector.<Function> : null;
 
         var numListeners:int = listeners == null ? 0 : listeners.length;
 
@@ -126,8 +126,8 @@ public class EventDispatcher implements IEventDispatcher {
         var element:Node = this as Node;
         var length:int = 1;
 
-        if(sBubbleChains.length > 0) {
-            chain = sBubbleChains.pop();
+        if(_bubbleChains.length > 0) {
+            chain = _bubbleChains.pop();
             chain[0] = element;
         }
         else chain = new <EventDispatcher>[element];
@@ -141,7 +141,7 @@ public class EventDispatcher implements IEventDispatcher {
         }
 
         chain.length = 0;
-        sBubbleChains[sBubbleChains.length] = chain;
+        _bubbleChains[_bubbleChains.length] = chain;
     }
 
 }

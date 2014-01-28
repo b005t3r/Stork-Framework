@@ -35,6 +35,9 @@ public class ContainerNode extends Node {
                 setNodeIndex(node, index); // avoids dispatching events
             }
             else {
+                use namespace stork_internal;
+
+                node.beingAdded = true;
                 node.removeFromParent();
 
                 // 'splice' creates a temporary object, so we avoid it if it's not necessary
@@ -42,14 +45,16 @@ public class ContainerNode extends Node {
                 else                _nodes.splice(index, 0, node);
 
                 node.setParentNode(this);
-                node.dispatchEvent(_addedToParentEvent);
+                node.dispatchEvent(_addedToParentEvent.reset());
 
                 if(sceneNode) {
                     var container:ContainerNode = node as ContainerNode;
 
-                    if(container != null)   container.broadcastEvent(_addedToSceneEvent);
-                    else                    node.dispatchEvent(_addedToSceneEvent);
+                    if(container != null)   container.broadcastEvent(_addedToSceneEvent.reset());
+                    else                    node.dispatchEvent(_addedToSceneEvent.reset());
                 }
+
+                node.beingAdded = false;
             }
         }
         else {
@@ -66,21 +71,27 @@ public class ContainerNode extends Node {
 
     public function removeNodeAt(index:int):void {
         if(index >= 0 && index < nodeCount) {
-            var child:Node = _nodes[index];
-            child.dispatchEvent(_removedFromParentEvent);
+            use namespace stork_internal;
+
+            var node:Node = _nodes[index];
+
+            node.beingRemoved = true;
+            node.dispatchEvent(_removedFromParentEvent.reset());
 
             if(sceneNode) {
-                var container:ContainerNode = child as ContainerNode;
+                var container:ContainerNode = node as ContainerNode;
 
-                if(container != null)   container.broadcastEvent(_removedFromSceneEvent);
-                else                    child.dispatchEvent(_removedFromSceneEvent);
+                if(container != null)   container.broadcastEvent(_removedFromSceneEvent.reset());
+                else                    node.dispatchEvent(_removedFromSceneEvent.reset());
             }
 
-            child.setParentNode(null);
-            index = _nodes.indexOf(child); // index might have changed by event handler
+            node.setParentNode(null);
+            index = _nodes.indexOf(node); // index might have changed by event handler
 
             if(index >= 0)
                 _nodes.splice(index, 1);
+
+            node.beingRemoved = false;
         }
         else {
             throw new RangeError("Invalid child index");

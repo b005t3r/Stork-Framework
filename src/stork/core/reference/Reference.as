@@ -8,6 +8,7 @@ import flash.utils.getDefinitionByName;
 
 import stork.core.ContainerNode;
 import stork.core.Node;
+import stork.core.stork_internal;
 
 public class Reference {
     protected var _referencing:Node;
@@ -29,28 +30,7 @@ public class Reference {
     public function dispose():void { /*do nothing*/ }
 
     protected function findReferencedNode(container:ContainerNode):Node {
-        var node:Node = container;
-
-        var count:int = _compiledSegments.length;
-        for(var i:int = 0; i < count; i++) {
-            if(node == null)
-                break;
-
-            var segment:CompiledReferenceSegment = _compiledSegments[i];
-
-            switch(segment.type) {
-                case CompiledReferenceSegment.CLASS:
-                    node = (node as ContainerNode).getNodeByClass(segment.value as Class);
-                    break;
-
-                case CompiledReferenceSegment.NODE_NAME:
-                    node = (node as ContainerNode).getNodeByName(segment.value as String);
-                    break;
-
-                default:
-                    throw new Error("invalid segment type: " + segment.type);
-            }
-        }
+        var node:Node = findReferencedNodeImpl(container, 0);
 
         return node;
     }
@@ -101,8 +81,38 @@ public class Reference {
             _compiledSegments[_compiledSegments.length] = segment;
         }
     }
+
+    private function findReferencedNodeImpl(container:ContainerNode, segmentIndex:int):Node {
+        use namespace stork_internal;
+
+        var segment:CompiledReferenceSegment = _compiledSegments[segmentIndex];
+
+        var count:int = container.nodeCount;
+        for(var i:int = 0; i < count; i++) {
+            var node:Node = container.getNodeAt(i);
+
+            if(node.beingRemoved || ! segment.matches(node))
+                continue;
+
+            // last segment
+            if(segmentIndex == _compiledSegments.length - 1) {
+                return node;
+            }
+            // middle segment, has to be a ContainerNode
+            else {
+                var nextNode:Node = findReferencedNodeImpl(node as ContainerNode, segmentIndex + 1);
+
+                if(nextNode != null)
+                    return nextNode;
+            }
+        }
+
+        return null;
+    }
 }
 }
+
+import stork.core.Node;
 
 internal class CompiledReferenceSegment {
     public static const CLASS:int           = 1;
@@ -114,5 +124,18 @@ internal class CompiledReferenceSegment {
     public function CompiledReferenceSegment(type:int, value:*) {
         this.type = type;
         this.value = value;
+    }
+
+    public function matches(node:Node):Boolean {
+        switch(type) {
+            case CompiledReferenceSegment.CLASS:
+                return (node is (value as Class));
+
+            case CompiledReferenceSegment.NODE_NAME:
+                return node.name == (value as String);
+
+            default:
+                throw new Error("invalid segment type: " + type);
+        }
     }
 }

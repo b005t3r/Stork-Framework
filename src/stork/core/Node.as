@@ -27,6 +27,9 @@ public class Node extends EventDispatcher {
 
     private var _references:Vector.<Reference>;
 
+    stork_internal var beingAdded:Boolean       = false;
+    stork_internal var beingRemoved:Boolean     = false;
+
     public function Node(name:String = "Node") {
         _name = name;
 
