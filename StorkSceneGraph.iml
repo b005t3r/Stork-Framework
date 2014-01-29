@@ -35,7 +35,7 @@
       <library type="flex">
         <properties id="0f61ce8d-bde5-4c39-9b0a-d77913db3f02" />
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/flexunit-4.1.0-8-as3_4.1.0.16076.swc!/" />
+          <root url="jar://$MODULE_DIR$/libTest/flexunit-4.1.0-8-as3_4.1.0.16076.swc!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
