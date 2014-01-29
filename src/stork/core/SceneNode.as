@@ -35,7 +35,7 @@ public class SceneNode extends ContainerNode{
         dispatchEvent(_stepEvent.stork_internal::resetDt(dt));
     }
 
-    public function _registerPlugin(plugin:ScenePlugin):void {
+    public function registerPlugin(plugin:ScenePlugin):void {
         if(_started)
             throw new IllegalOperationError("new plugins can be registered only before calling start()");
 
@@ -45,7 +45,7 @@ public class SceneNode extends ContainerNode{
         _registeredPlugins[_registeredPlugins.length] = plugin;
     }
 
-    public function _unregisterPlugin(plugin:ScenePlugin):void {
+    public function unregisterPlugin(plugin:ScenePlugin):void {
         if(_started)
             throw new IllegalOperationError("plugins can be unregistered only before calling start()");
 
@@ -56,11 +56,36 @@ public class SceneNode extends ContainerNode{
         _registeredPlugins.splice(index, 1);
     }
 
+    public function get pluginCount():int { return _activePlugins.length; }
+
+    public function getPluginIndex(plugin:ScenePlugin):int { return _activePlugins.indexOf(plugin); }
+
+    public function getPluginAt(index:int):ScenePlugin { return _activePlugins[index]; }
+
+    public function getPluginByName(name:String):ScenePlugin {
+        var count:int = _activePlugins.length;
+        for(var i:int = 0; i < count; ++i)
+            if(_activePlugins[i].name == name)
+                return _activePlugins[i];
+
+        return null;
+    }
+
+    public function getPluginByClass(nodeClass:Class):ScenePlugin {
+        var count:int = _activePlugins.length;
+        for(var i:int = 0; i < count; ++i)
+            if(_activePlugins[i] is nodeClass)
+                return _activePlugins[i];
+
+        return null;
+    }
+
     public function start():void {
         if(_started)
             throw new IllegalOperationError("this scene is already started");
 
         addEventListener(ScenePluginEvent.PLUGIN_ACTIVATED, onPluginActivated);
+        // TODO: not sure if necessary
         //addEventListener(ScenePluginEvent.PLUGIN_DEACTIVATED, onPluginDeactivated);
 
         activatePlugins();
@@ -69,6 +94,9 @@ public class SceneNode extends ContainerNode{
     private function activatePlugins():void {
         if(_activatingPlugins)
             return;
+
+        var activeCount:int     = _activePlugins.length;
+        var activatedCount:int  = 0;
 
         _activatingPlugins = true;
 
@@ -80,14 +108,20 @@ public class SceneNode extends ContainerNode{
             if(activatedIndex >= 0 || ! plugin.canBeActivated(this))
                 continue;
 
+            ++activatedCount;
+
             plugin.setSceneNode(this);
             plugin.activate();
         }
 
+        _activatingPlugins = false;
+
+        // all plugins active, start
         if(_registeredPlugins.length == _activePlugins.length)
             startScene();
-
-        _activatingPlugins = false;
+        // all plugins activated on this call are already active, try activating the rest
+        else if(_activePlugins.length == activeCount + activatedCount)
+            activatePlugins();
     }
 
     private function startScene():void {
