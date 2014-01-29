@@ -11,9 +11,6 @@ import stork.core.stork_internal;
 import stork.event.plugin.ScenePluginEvent;
 
 public class ScenePlugin {
-    private var _activatedEvent:ScenePluginEvent    = new ScenePluginEvent(ScenePluginEvent.PLUGIN_ACTIVATED, this);
-    private var _deactivatedEvent:ScenePluginEvent  = new ScenePluginEvent(ScenePluginEvent.PLUGIN_DEACTIVATED, this);
-
     private var _name:String;
     private var _sceneNode:SceneNode;
 
@@ -38,7 +35,7 @@ public class ScenePlugin {
 
     stork_internal function setSceneNode(sceneNode:SceneNode):void { _sceneNode = sceneNode; }
 
-    protected function fireActivatedEvent():void { sceneNode.dispatchEvent(_activatedEvent.reset()); }
-    protected function fireDeactivatedEvent():void { sceneNode.dispatchEvent(_deactivatedEvent.reset()); }
+    protected function fireActivatedEvent():void { sceneNode.dispatchEvent(new ScenePluginEvent(ScenePluginEvent.PLUGIN_ACTIVATED, this)); }
+    protected function fireDeactivatedEvent():void { sceneNode.dispatchEvent(new ScenePluginEvent(ScenePluginEvent.PLUGIN_DEACTIVATED, this)); }
 }
 }
