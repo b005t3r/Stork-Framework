@@ -52,6 +52,10 @@ public class Node extends EventDispatcher {
         return node as SceneNode;
     }
 
+    public function toString():String {
+        return "[" + getQualifiedClassName(this).split("::").pop() + " name=\"" + _name + "]";
+    }
+
     public function removeFromParent():void {
         if(_parentNode == null) return;
 
