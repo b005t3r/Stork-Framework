@@ -14,7 +14,7 @@ import stork.event.plugin.ScenePluginEvent;
 use namespace stork_internal;
 
 public class SceneNode extends ContainerNode{
-    private var _stepEvent:SceneStepEvent = new SceneStepEvent();
+    private var _stepEvent:SceneStepEvent               = new SceneStepEvent(SceneStepEvent.STEP);
 
     private var _registeredPlugins:Vector.<ScenePlugin> = new <ScenePlugin>[];
     private var _activePlugins:Vector.<ScenePlugin> = new <ScenePlugin>[];

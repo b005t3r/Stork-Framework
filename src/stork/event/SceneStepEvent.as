@@ -11,7 +11,7 @@ public class SceneStepEvent extends SceneEvent {
 
     private var _dt:Number;
 
-    public function SceneStepEvent() {
+    public function SceneStepEvent(type:String) {
         super(type);
     }
 
