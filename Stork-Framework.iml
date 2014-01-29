@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="Flex" version="4">
-  <component name="FlexBuildConfigurationManager" active="StorkSceneGraph">
+  <component name="FlexBuildConfigurationManager" active="Stork-Framework">
     <configurations>
-      <configuration name="StorkSceneGraph" target-platform="Desktop" pure-as="true" output-type="Library" output-file="StorkSceneGraph.swc" output-folder="$MODULE_DIR$/../StorkTest/out">
+      <configuration name="Stork-Framework" target-platform="Desktop" pure-as="true" output-type="Library" output-file="stork.swc" output-folder="$MODULE_DIR$/out">
         <dependencies target-player="12.0">
           <entries>
             <entry library-id="0f61ce8d-bde5-4c39-9b0a-d77913db3f02">
