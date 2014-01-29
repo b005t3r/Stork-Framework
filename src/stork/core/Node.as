@@ -59,11 +59,6 @@ public class Node extends EventDispatcher {
     }
 
     internal function setParentNode(value:ContainerNode):void {
-        var prevParent:Node     = _parentNode;
-        var prevScene:SceneNode = sceneNode;
-        var currParent:Node     = value;
-        var currScene:SceneNode = value != null ? value.sceneNode : null;
-
         // check for a recursion
         var ancestor:ContainerNode = value;
         while (ancestor != this && ancestor != null)
@@ -72,31 +67,7 @@ public class Node extends EventDispatcher {
         if (ancestor == this)
             throw new ArgumentError("a node cannot be added as a child to itself or one of its children (or children's children, etc.)");
 
-        if(prevParent != currParent && prevParent != null)
-            onRemovedFromParent(prevParent);
-
-        if(prevScene != currScene && prevScene != null)
-            onRemovedFromScene(prevScene);
-
         _parentNode = value;
-
-        if(prevParent != currParent && currParent != null)
-            onAddedToParent(currParent);
-
-        if(prevScene != currScene && currScene != null)
-            onAddedToScene(currScene);
-    }
-
-    protected function onAddedToScene(scene:SceneNode):void {
-    }
-
-    protected function onAddedToParent(parent:Node):void {
-    }
-
-    protected function onRemovedFromScene(scene:SceneNode):void {
-    }
-
-    protected function onRemovedFromParent(parent:Node):void {
     }
 
     private static function initReferenceData(object:Object, className:String):void {
