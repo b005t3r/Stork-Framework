@@ -218,7 +218,7 @@ public class ReferenceTest {
         assertEquals(complexNode.ref, mySibling);
         assertEquals(complexNode.pubRef, publicRefNode);
 
-        scene.addNode(container);
+        scene.addNode(container); // re-add test, nothing should change
 
         assertEquals(complexNode.globCont, globalContainer);
         assertEquals(complexNode.locCont, localContainer);
@@ -244,6 +244,97 @@ public class ReferenceTest {
         assertEquals(complexNode.locCont, anotherLocalContainer);
         assertEquals(complexNode.ref, mySibling);
         assertEquals(complexNode.pubRef, anotherPublicRefNode);
+
+        complexContainer.addNode(siblingContainer);
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, anotherLocalContainer);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, anotherPublicRefNode);
+
+        anotherLocalContainer.removeFromParent();
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, localContainer);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, anotherPublicRefNode);
+
+        complexContainer.addNode(anotherLocalContainer);
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, localContainer);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, anotherPublicRefNode);
+
+        anotherPublicRefNode.removeFromParent();
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, localContainer);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, publicRefNode);
+
+        anotherSiblingContainer.addNode(anotherPublicRefNode);
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, localContainer);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, publicRefNode);
+
+        anotherSiblingContainer.removeFromParent();
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, localContainer);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, publicRefNode);
+
+        localContainer.removeFromParent();
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, null);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, publicRefNode);
+
+        siblingContainer.removeFromParent();
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, null);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, null);
+
+        complexContainer.addNode(siblingContainer);
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, null);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, publicRefNode);
+
+        siblingContainer.removeFromParent();
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, null);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, null);
+
+        anotherContainer.removeFromParent();
+
+        assertEquals(complexNode.globCont, globalContainer);
+        assertEquals(complexNode.locCont, null);
+        assertEquals(complexNode.ref, mySibling);
+        assertEquals(complexNode.pubRef, null);
+
+        container.removeFromParent();
+
+        assertEquals(complexNode.globCont, null);
+        assertEquals(complexNode.locCont, null);
+        assertEquals(complexNode.ref, null);
+        assertEquals(complexNode.pubRef, null);
+
+        scene.addNode(anotherContainer);
+
+        assertEquals(complexNode.globCont, anotherGlobalContainer);
+        assertEquals(complexNode.locCont, null);
+        assertEquals(complexNode.ref, anotherMySibling);
+        assertEquals(complexNode.pubRef, null);
     }
 }
 }

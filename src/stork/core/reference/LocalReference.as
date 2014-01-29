@@ -26,6 +26,7 @@ public class LocalReference extends Reference {
                 setReferenced(node);
 
                 node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+                node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene)
             }
         }
     }
@@ -37,8 +38,10 @@ public class LocalReference extends Reference {
         if(_referencing.parentNode != null)
             _referencing.parentNode.removeEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
 
-        if(_referenced != null)
+        if(_referenced != null) {
             _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+        }
 
         super.dispose();
     }
@@ -59,6 +62,7 @@ public class LocalReference extends Reference {
             setReferenced(node);
 
             node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
         }
     }
 
@@ -71,6 +75,7 @@ public class LocalReference extends Reference {
 
         if(_referenced != null) {
             _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
             setReferenced(null);
         }
 
@@ -91,6 +96,7 @@ public class LocalReference extends Reference {
         setReferenced(node);
 
         node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+        node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
     }
 
     private function onReferencedRemovedFromParent(event:Event):void {
@@ -98,6 +104,7 @@ public class LocalReference extends Reference {
             return;
 
         _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+        _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene)
 
         var node:Node = findReferencedNode(_referencing.parentNode);
 
@@ -110,6 +117,31 @@ public class LocalReference extends Reference {
             setReferenced(node);
 
             node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+        }
+    }
+
+    private function onReferencedRemovedFromScene(event:Event):void {
+        var node:Node = findReferencedNode(_referencing.parentNode);
+
+        if(node == _referenced)
+            return;
+
+        if(node != _referenced) {
+            _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+
+            setReferenced(null);
+        }
+
+        if(node == null) {
+            _referencing.parentNode.addEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+        }
+        else {
+            setReferenced(node);
+
+            node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
         }
     }
 }
