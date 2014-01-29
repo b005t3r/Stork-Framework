@@ -7,9 +7,6 @@ package stork.event {
 import flash.utils.Dictionary;
 
 import stork.core.Node;
-import stork.core.stork_internal;
-
-use namespace stork_internal;
 
 public class EventDispatcher implements IEventDispatcher {
     private static var _bubbleChains:Array = [];

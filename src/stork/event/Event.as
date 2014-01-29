@@ -6,10 +6,6 @@
 package stork.event {
 import flash.utils.getQualifiedClassName;
 
-import stork.core.stork_internal;
-
-use namespace stork_internal;
-
 public class Event {
     public static const ADDED_TO_PARENT:String      = "addedToParentNode";
     public static const REMOVED_FROM_PARENT:String  = "removedFromParentNode";

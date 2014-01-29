@@ -9,10 +9,8 @@ import flash.utils.describeType;
 import flash.utils.getQualifiedClassName;
 
 import stork.core.reference.GlobalReference;
-
-import stork.core.reference.Reference;
 import stork.core.reference.LocalReference;
-
+import stork.core.reference.Reference;
 import stork.event.EventDispatcher;
 
 public class Node extends EventDispatcher {
