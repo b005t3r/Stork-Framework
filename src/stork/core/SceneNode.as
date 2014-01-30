@@ -7,6 +7,7 @@ package stork.core {
 import flash.errors.IllegalOperationError;
 
 import stork.core.plugin.ScenePlugin;
+import stork.core.stork_internal;
 import stork.event.SceneEvent;
 import stork.event.SceneObjectEvent;
 import stork.event.SceneStepEvent;
@@ -19,26 +20,19 @@ public class SceneNode extends ContainerNode {
     private var _objectAddedEvent:SceneObjectEvent      = new SceneObjectEvent(SceneObjectEvent.OBJECT_ADDED_TO_SCENE);
     private var _objectRemovedEvent:SceneObjectEvent    = new SceneObjectEvent(SceneObjectEvent.OBJECT_REMOVED_FROM_SCENE);
 
+    private var _objects:Vector.<ObjectHolder>          = new <ObjectHolder>[];
+
     private var _registeredPlugins:Vector.<ScenePlugin> = new <ScenePlugin>[];
-    private var _activePlugins:Vector.<ScenePlugin> = new <ScenePlugin>[];
+    private var _activePlugins:Vector.<ScenePlugin>     = new <ScenePlugin>[];
 
-    private var _started:Boolean;
-
-    private var _activatingPlugins:Boolean;
-
-    private var _objects:Vector.<ObjectHolder> = new <ObjectHolder>[];
+    private var _started:Boolean                        = false;
+    private var _activatingPlugins:Boolean              = false;
 
     public function SceneNode(name:String = "SceneNode") {
         super(name);
     }
 
     public function get started():Boolean { return _started; }
-
-    public function step(dt:Number):void {
-        if(! _started) return;
-
-        dispatchEvent(_stepEvent.stork_internal::resetDt(dt));
-    }
 
     public function get objectCount():int { return _objects.length; }
 
@@ -218,6 +212,12 @@ public class SceneNode extends ContainerNode {
         //addEventListener(ScenePluginEvent.PLUGIN_DEACTIVATED, onPluginDeactivated);
 
         activatePlugins();
+    }
+
+    stork_internal function step(dt:Number):void {
+        if(! _started) return;
+
+        dispatchEvent(_stepEvent.stork_internal::resetDt(dt));
     }
 
     private function activatePlugins():void {
