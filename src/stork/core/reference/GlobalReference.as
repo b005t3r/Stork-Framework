@@ -8,7 +8,9 @@ import stork.core.Node;
 import stork.core.SceneNode;
 import stork.event.Event;
 
-public class GlobalReference extends Reference {
+public class GlobalReference extends NodeReference {
+    public static const TAG_NAME:String = "GlobalReference";
+
     public function GlobalReference(referencing:Node, propertyName:String, path:String) {
         super(referencing, propertyName, path);
 

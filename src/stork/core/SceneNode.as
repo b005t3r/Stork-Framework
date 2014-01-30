@@ -7,6 +7,9 @@ package stork.core {
 import flash.errors.IllegalOperationError;
 
 import stork.core.plugin.ScenePlugin;
+import stork.core.reference.GlobalReference;
+import stork.core.reference.LocalReference;
+import stork.core.reference.ReferenceUtil;
 import stork.core.stork_internal;
 import stork.event.SceneEvent;
 import stork.event.SceneObjectEvent;

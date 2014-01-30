@@ -7,7 +7,9 @@ package stork.core.reference {
 import stork.core.Node;
 import stork.event.Event;
 
-public class LocalReference extends Reference {
+public class LocalReference extends NodeReference {
+    public static const TAG_NAME:String = "LocalReference";
+
     public function LocalReference(referencing:Node, propertyName:String, path:String) {
         super(referencing, propertyName, path);
 
