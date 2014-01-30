@@ -29,14 +29,14 @@ public class NodeReference extends Reference {
 
     protected function setReferenced(value:Node):void {
         if(value != null) {
+            if(value.parentNode == null)
+                throw new UninitializedError("referenced object is not added to parent");
+
             if(_referenced != null)
                 throw new ArgumentError("unset previously referenced property before setting a new one");
 
             _referenced                 = value;
             _referencing[_propertyName] = value;
-
-            if(value.parentNode == null)
-                throw new UninitializedError("referenced object is not added to parent");
         }
         else {
             if(_referenced == null)
