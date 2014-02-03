@@ -22,6 +22,7 @@ public class ReferenceUtil {
     {
         ReferenceUtil.registerReferenceClass(LocalReference, LocalReference.TAG_NAME);
         ReferenceUtil.registerReferenceClass(GlobalReference, GlobalReference.TAG_NAME);
+        ReferenceUtil.registerReferenceClass(ObjectReference, ObjectReference.TAG_NAME);
     }
 
     public static function registerReferenceClass(clazz:Class, tagName:String):void {
@@ -57,19 +58,19 @@ public class ReferenceUtil {
         _referenceData[className] = refs = new <ReferenceData>[];
 
         var type:XML = describeType(node);
-        var metadataXML:XML;
+        var metadataXML:XML, tag:String;
 
         // set variables references
         for each (var variableXML:XML in type.variable)
             for each(metadataXML in variableXML.metadata)
-                for(var tag:String in _referenceClasses)
+                for(tag in _referenceClasses)
                     if(metadataXML.@name == tag)
                         refs[refs.length] = new ReferenceData(variableXML.@name, metadataXML.arg.@value, tag);
 
         // set accessor references
         for each (var accessorXML:XML in type.accessor)
             for each(metadataXML in accessorXML.metadata)
-                for(var tag:String in _referenceClasses)
+                for(tag in _referenceClasses)
                     if(metadataXML.@name == tag)
                         refs[refs.length] = new ReferenceData(accessorXML.@name, metadataXML.arg.@value, tag);
 

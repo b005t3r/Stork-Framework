@@ -90,9 +90,9 @@ public class SceneNode extends ContainerNode {
     }
 
     public function getObjectIndex(object:Object):int {
-        var count:int = object.length;
+        var count:int = _objects.length;
         for(var i:int = 0; i < count; i++) {
-            var holder:ObjectHolder = object[i];
+            var holder:ObjectHolder = _objects[i];
 
             if(object == holder.object)
                 return i;
@@ -131,6 +131,7 @@ public class SceneNode extends ContainerNode {
     }
 
     public function getObjectAt(index:int):Object { return _objects[index].object; }
+    public function getObjectNameAt(index:int):String { return _objects[index].name; }
 
     public function getObjectByName(name:String):Object {
         var count:int = _objects.length;
