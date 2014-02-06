@@ -154,13 +154,17 @@ public class ContainerNode extends Node {
         return null;
     }
 
-    public function getNodesByClass(nodeClass:Class, nodes:Vector.<Node> = null):Vector.<Node> {
+    public function getNodesByClass(nodeClass:Class, nodes:Vector.<Node> = null, recursive:Boolean = false):Vector.<Node> {
         if(nodes == null) nodes = new <Node>[];
 
         var count:int = _nodes.length;
         for(var i:int = 0; i < count; ++i)
-            if(_nodes[i] is nodeClass)
-                nodes[nodes.length] = _nodes[i];
+            var n:Node = _nodes[i];
+
+            if(n is nodeClass)
+                nodes[nodes.length] = n;
+            else if(recursive && n is ContainerNode)
+                (n as ContainerNode).getNodesByClass(nodeClass, nodes, true);
 
         return nodes;
     }
