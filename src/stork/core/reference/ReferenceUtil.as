@@ -8,6 +8,8 @@ import flash.utils.Dictionary;
 import flash.utils.describeType;
 import flash.utils.getQualifiedClassName;
 
+import stork.core.ContainerNode;
+
 import stork.core.Node;
 
 import stork.core.stork_internal;
@@ -17,6 +19,7 @@ use namespace stork_internal;
 public class ReferenceUtil {
     private static var _referenceClasses:Dictionary = new Dictionary(); // referenceTag -> referenceImplClass
     private static var _referenceData:Dictionary    = new Dictionary(); // nodeClassName -> Vector.<ReferenceData>
+    private static var _rootClasses:Dictionary      = new Dictionary(); // nodeClassName -> Boolean (isRoot)
 
     // static initializer
     {
@@ -27,6 +30,27 @@ public class ReferenceUtil {
 
     public static function registerReferenceClass(clazz:Class, tagName:String):void {
         _referenceClasses[tagName] = clazz;
+    }
+
+    public static function isRoot(container:ContainerNode):Boolean {
+        return _rootClasses[getQualifiedClassName(container)];
+    }
+
+    stork_internal static function registerRootClass(containerNode:ContainerNode):void {
+        var className:String = getQualifiedClassName(containerNode);
+
+        // already registered
+        if(_rootClasses[className] != null) return;
+
+        _rootClasses[className] = false;
+
+        var typeXML:XML = describeType(containerNode);
+        for each(var metadataXML:XML in typeXML.metadata) {
+            if(metadataXML.@name == GlobalReference.ROOT_TAG_NAME) {
+                _rootClasses[className] = true;
+                break;
+            }
+        }
     }
 
     stork_internal static function injectReferences(node:Node):void {
@@ -57,18 +81,18 @@ public class ReferenceUtil {
 
         _referenceData[className] = refs = new <ReferenceData>[];
 
-        var type:XML = describeType(node);
+        var typeXML:XML = describeType(node);
         var metadataXML:XML, tag:String;
 
         // set variables references
-        for each (var variableXML:XML in type.variable)
+        for each (var variableXML:XML in typeXML.variable)
             for each(metadataXML in variableXML.metadata)
                 for(tag in _referenceClasses)
                     if(metadataXML.@name == tag)
                         refs[refs.length] = new ReferenceData(variableXML.@name, metadataXML.arg.@value, tag);
 
         // set accessor references
-        for each (var accessorXML:XML in type.accessor)
+        for each (var accessorXML:XML in typeXML.accessor)
             for each(metadataXML in accessorXML.metadata)
                 for(tag in _referenceClasses)
                     if(metadataXML.@name == tag)

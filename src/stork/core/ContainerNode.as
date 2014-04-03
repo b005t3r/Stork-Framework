@@ -4,6 +4,7 @@
  * Time: 9:57
  */
 package stork.core {
+import stork.core.reference.ReferenceUtil;
 import stork.event.Event;
 
 public class ContainerNode extends Node {
@@ -19,6 +20,8 @@ public class ContainerNode extends Node {
 
     public function ContainerNode(name:String = "ContainerNode") {
         super(name);
+
+        ReferenceUtil.stork_internal::registerRootClass(this);
     }
 
     public function get nodeCount():int { return _nodes.length; }

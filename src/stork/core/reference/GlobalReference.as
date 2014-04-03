@@ -4,14 +4,28 @@
  * Time: 9:35
  */
 package stork.core.reference {
+import stork.core.ContainerNode;
 import stork.core.Node;
 import stork.core.SceneNode;
 import stork.event.Event;
 
 public class GlobalReference extends NodeReference {
-    public static const TAG_NAME:String = "GlobalReference";
+    public static const TAG_NAME:String         = "GlobalReference";
+    public static const ROOT_TAG_NAME:String    = "GlobalReferenceRoot";
+
+    public static const ROOT_PATH_PREFIX:String  = "root://";
+
+    private var _relativeToRoot:Boolean;
 
     public function GlobalReference(referencing:Node, propertyName:String, path:String) {
+        if(path.indexOf(ROOT_PATH_PREFIX) == 0) {
+            _relativeToRoot = true;
+            path = path.replace(ROOT_PATH_PREFIX, "");
+        }
+        else {
+            _relativeToRoot = false;
+        }
+
         super(referencing, propertyName, path);
 
         var sceneNode:SceneNode = _referencing.sceneNode;
@@ -48,6 +62,36 @@ public class GlobalReference extends NodeReference {
             _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
 
         super.dispose();
+    }
+
+    override protected function findReferencedNode(container:ContainerNode):Node {
+        var sceneNode:SceneNode = container as SceneNode;
+
+        if(sceneNode == null)
+            throw new ArgumentError("SceneNode has to be passed as 'container' to findReferencedNode() for GlobalReferences");
+
+        if(! _relativeToRoot)
+            return super.findReferencedNode(sceneNode);
+
+        var rootNode:ContainerNode = findRootNode();
+
+        if(rootNode == null)
+            return null;
+
+        return super.findReferencedNode(rootNode);
+    }
+
+    private function findRootNode():ContainerNode {
+        var parent:ContainerNode = _referencing.parentNode;
+
+        while(parent != null) {
+            if(ReferenceUtil.isRoot(parent))
+                return parent;
+
+            parent = parent.parentNode;
+        }
+
+        return null;
     }
 
     private function onReferencingAddedToScene(event:Event):void {
