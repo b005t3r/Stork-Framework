@@ -133,6 +133,7 @@ public class ObjectReference extends Reference {
         // class name
         if(name.charCodeAt(0) == "@".charCodeAt(0)) {
             name = name.substr(1, name.length - 1);
+            name = getFullClassName(name);
             var clazz:Class = getDefinitionByName(name) as Class;
 
             _type    = CLASS;
