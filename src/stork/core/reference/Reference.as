@@ -13,17 +13,19 @@ public class Reference {
     protected var _propertyName:String;
     protected var _path:String;
 
-    public static function getFullClassName(className):String {
+    public static function getFullClassName(className:String):String {
         var classNames:Vector.<String> = ApplicationDomain.currentDomain.getQualifiedDefinitionNames();
 
         var count:int = classNames.length;
         for(var i:int = 0; i < count; i++) {
             var fullClassName:String = classNames[i];
 
-            var index:int = fullClassName.indexOf(className);
+            var index:int = fullClassName.lastIndexOf(className);
 
-            if(index >= 0)
+            if(index >= 0 && index + className.length == fullClassName.length) {
+                //trace(className, "->", fullClassName);
                 return fullClassName;
+            }
         }
 
         return null;
