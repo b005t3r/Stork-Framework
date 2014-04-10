@@ -13,8 +13,9 @@ public class GameActionNode extends Node {
     private var _actionCanceled:Boolean = false;
     private var _autoReset:Boolean      = true;
 
-    private var _totalTime:Number     = 0;
-    private var _stepTime:Number      = 0;
+    private var _totalTime:Number       = 0;
+    private var _stepTime:Number        = 0;
+    private var _currentStep:int        = 0;
 
     protected var _startedEvent:GameActionEvent     = new GameActionEvent(GameActionEvent.STARTED);
     protected var _stepEvent:GameActionEvent        = new GameActionEvent(GameActionEvent.STEP);
@@ -41,6 +42,7 @@ public class GameActionNode extends Node {
 
     public function get totalTime():Number { return _totalTime; }
     public function get stepTime():Number { return _stepTime; }
+    public function get currentStep():int { return _currentStep; }
 
     public function get finished():Boolean { return _actionFinished; }
     public function get canceled():Boolean { return _actionCanceled; }
@@ -101,6 +103,8 @@ public class GameActionNode extends Node {
                     dt = 0;
                 }
 
+                ++_currentStep;
+
                 _totalTime     += _stepFinishedDt;
                 _stepTime      += _stepFinishedDt;
                 _stepFinishedDt = 0;
@@ -131,6 +135,7 @@ public class GameActionNode extends Node {
 
         _totalTime      = 0;
         _stepTime       = 0;
+        _currentStep    = 0;
 
         removeEventListeners();
         removeFromParent();
