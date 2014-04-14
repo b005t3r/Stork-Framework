@@ -4,23 +4,46 @@
  * Time: 9:35
  */
 package stork.core.reference {
+import flash.utils.getDefinitionByName;
+
 import stork.core.ContainerNode;
 import stork.core.Node;
 import stork.core.SceneNode;
 import stork.event.Event;
 
 public class GlobalReference extends NodeReference {
-    public static const TAG_NAME:String         = "GlobalReference";
-    public static const ROOT_TAG_NAME:String    = "GlobalReferenceRoot";
+    public static const TAG_NAME:String             = "GlobalReference";
+    public static const ROOT_PATH_SEPARATOR:String  = "://";
 
-    public static const ROOT_PATH_PREFIX:String  = "root://";
+    private static const CLASS:int                  = 1;
+    private static const NODE_NAME:int              = 2;
 
     private var _relativeToRoot:Boolean;
+    private var _rootType:int;
+    private var _rootValue:*;
 
     public function GlobalReference(referencing:Node, propertyName:String, path:String) {
-        if(path.indexOf(ROOT_PATH_PREFIX) == 0) {
-            _relativeToRoot = true;
-            path = path.replace(ROOT_PATH_PREFIX, "");
+        var rootSeparatorIndex:int = path.indexOf(ROOT_PATH_SEPARATOR);
+
+        if(rootSeparatorIndex >= 0) {
+            _relativeToRoot     = true;
+            var rootName:String = path.substring(0, rootSeparatorIndex);
+            path                = path.substring(rootSeparatorIndex + ROOT_PATH_SEPARATOR.length);
+
+            // class name
+            if(rootName.charCodeAt(0) == "@".charCodeAt(0)) {
+                rootName        = rootName.substr(1, rootName.length - 1);
+                rootName        = getFullClassName(rootName);
+                var clazz:Class = getDefinitionByName(rootName) as Class;
+
+                _rootType   = CLASS;
+                _rootValue  = clazz;
+            }
+            // component name
+            else {
+                _rootType   = NODE_NAME;
+                _rootValue  = rootName;
+            }
         }
         else {
             _relativeToRoot = false;
@@ -85,8 +108,14 @@ public class GlobalReference extends NodeReference {
         var parent:ContainerNode = _referencing.parentNode;
 
         while(parent != null) {
-            if(ReferenceUtil.isRoot(parent))
-                return parent;
+            if(_rootType == CLASS) {
+                if(parent is (_rootValue as Class))
+                    return parent;
+            }
+            else {
+                if(parent.name == (_rootValue as String))
+                    return parent;
+            }
 
             parent = parent.parentNode;
         }

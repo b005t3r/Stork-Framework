@@ -19,8 +19,8 @@ public class RootReferenceTest {
     [Before]
     public function setUp():void {
         scene = new SceneNode();
-        rootOne = new RootContainerNode("One");
-        rootTwo = new RootContainerNode("Two");
+        rootOne = new RootContainerNode();
+        rootTwo = new RootContainerNode();
 
         scene.addNode(rootOne);
         scene.addNode(rootTwo);
@@ -124,10 +124,10 @@ import stork.core.reference.test.PublicReferencedNode;
 class SimpleGlobalReferencingNode extends Node {
     private var _refName:ReferencedNode;
 
-    [GlobalReference("root://@stork.core.reference.test::PublicReferencedNode")]
+    [GlobalReference("RootContainer://@PublicReferencedNode")]
     public var refClass:PublicReferencedNode;
 
-    [GlobalReference("root://mySibling")]
+    [GlobalReference("RootContainer://mySibling")]
     public function get refName():ReferencedNode { return _refName; }
     public function set refName(value:ReferencedNode):void { _refName = value; }
 }
@@ -138,9 +138,8 @@ class ReferencedNode extends Node {
     }
 }
 
-[GlobalReferenceRoot]
 class RootContainerNode extends ContainerNode {
-    public function RootContainerNode(name:String = "RootContainerNode") {
+    public function RootContainerNode(name:String = "RootContainer") {
         super(name);
     }
 }

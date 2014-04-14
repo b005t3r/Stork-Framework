@@ -20,8 +20,6 @@ public class ContainerNode extends Node {
 
     public function ContainerNode(name:String = "ContainerNode") {
         super(name);
-
-        ReferenceUtil.stork_internal::registerRootClass(this);
     }
 
     public function get nodeCount():int { return _nodes.length; }

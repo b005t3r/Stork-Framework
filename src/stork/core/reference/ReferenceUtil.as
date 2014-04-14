@@ -19,7 +19,6 @@ use namespace stork_internal;
 public class ReferenceUtil {
     private static var _referenceClasses:Dictionary = new Dictionary(); // referenceTag -> referenceImplClass
     private static var _referenceData:Dictionary    = new Dictionary(); // nodeClassName -> Vector.<ReferenceData>
-    private static var _rootClasses:Dictionary      = new Dictionary(); // nodeClassName -> Boolean (isRoot)
 
     // static initializer
     {
@@ -30,27 +29,6 @@ public class ReferenceUtil {
 
     public static function registerReferenceClass(clazz:Class, tagName:String):void {
         _referenceClasses[tagName] = clazz;
-    }
-
-    public static function isRoot(container:ContainerNode):Boolean {
-        return _rootClasses[getQualifiedClassName(container)];
-    }
-
-    stork_internal static function registerRootClass(containerNode:ContainerNode):void {
-        var className:String = getQualifiedClassName(containerNode);
-
-        // already registered
-        if(_rootClasses[className] != null) return;
-
-        _rootClasses[className] = false;
-
-        var typeXML:XML = describeType(containerNode);
-        for each(var metadataXML:XML in typeXML.metadata) {
-            if(metadataXML.@name == GlobalReference.ROOT_TAG_NAME) {
-                _rootClasses[className] = true;
-                break;
-            }
-        }
     }
 
     stork_internal static function injectReferences(node:Node):void {
