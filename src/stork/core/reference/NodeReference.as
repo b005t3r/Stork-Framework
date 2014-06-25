@@ -6,6 +6,8 @@
 package stork.core.reference {
 import flash.utils.getDefinitionByName;
 
+import medkit.object.ObjectUtil;
+
 import stork.core.ContainerNode;
 import stork.core.Node;
 import stork.core.stork_internal;
@@ -48,9 +50,12 @@ public class NodeReference extends Reference {
     }
 
     private function compile():void {
-        var pathParts:Array = _path.split('/');
-
         _compiledSegments = new <CompiledReferenceSegment>[];
+
+        if(_path == null)
+            return;
+
+        var pathParts:Array = _path.split('/');
 
         var count:int = pathParts.length;
         for(var i:int = 0; i < count; i++) {
@@ -61,7 +66,7 @@ public class NodeReference extends Reference {
             // class name
             if(pathPart.charCodeAt(0) == "@".charCodeAt(0)) {
                 pathPart = pathPart.substr(1, pathPart.length - 1);
-                pathPart = getFullClassName(pathPart);
+                pathPart = ObjectUtil.getFullClassName(pathPart);
                 var clazz:Class = getDefinitionByName(pathPart) as Class;
 
                 segment = new CompiledReferenceSegment(CompiledReferenceSegment.CLASS, clazz);

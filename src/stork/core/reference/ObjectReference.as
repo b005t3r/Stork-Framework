@@ -6,6 +6,8 @@
 package stork.core.reference {
 import flash.utils.getDefinitionByName;
 
+import medkit.object.ObjectUtil;
+
 import stork.core.Node;
 import stork.core.SceneNode;
 import stork.event.Event;
@@ -133,7 +135,7 @@ public class ObjectReference extends Reference {
         // class name
         if(name.charCodeAt(0) == "@".charCodeAt(0)) {
             name = name.substr(1, name.length - 1);
-            name = getFullClassName(name);
+            name = ObjectUtil.getFullClassName(name);
             var clazz:Class = getDefinitionByName(name) as Class;
 
             _type    = CLASS;

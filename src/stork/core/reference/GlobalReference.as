@@ -6,6 +6,8 @@
 package stork.core.reference {
 import flash.utils.getDefinitionByName;
 
+import medkit.object.ObjectUtil;
+
 import stork.core.ContainerNode;
 import stork.core.Node;
 import stork.core.SceneNode;
@@ -30,10 +32,13 @@ public class GlobalReference extends NodeReference {
             var rootName:String = path.substring(0, rootSeparatorIndex);
             path                = path.substring(rootSeparatorIndex + ROOT_PATH_SEPARATOR.length);
 
+            if(path.length == 0)
+                path = null;
+
             // class name
             if(rootName.charCodeAt(0) == "@".charCodeAt(0)) {
                 rootName        = rootName.substr(1, rootName.length - 1);
-                rootName        = getFullClassName(rootName);
+                rootName        = ObjectUtil.getFullClassName(rootName);
                 var clazz:Class = getDefinitionByName(rootName) as Class;
 
                 _rootType   = CLASS;
@@ -100,6 +105,9 @@ public class GlobalReference extends NodeReference {
 
         if(rootNode == null)
             return null;
+
+        if(_compiledSegments.length == 0)
+            return rootNode;
 
         return super.findReferencedNode(rootNode);
     }
