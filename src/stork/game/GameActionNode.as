@@ -8,6 +8,8 @@ import stork.core.Node;
 import stork.event.game.GameActionEvent;
 
 public class GameActionNode extends Node {
+    private var _priority:int;
+
     private var _stepFinishedDt:Number  = 0;
     private var _actionFinished:Boolean = false;
     private var _actionCanceled:Boolean = false;
@@ -22,8 +24,10 @@ public class GameActionNode extends Node {
     protected var _finishedEvent:GameActionEvent    = new GameActionEvent(GameActionEvent.FINISHED);
     protected var _canceledEvent:GameActionEvent    = new GameActionEvent(GameActionEvent.CANCELED);
 
-    public function GameActionNode(name:String = "GameActionNode") {
+    public function GameActionNode(priority:int = int.MAX_VALUE, name:String = "GameActionNode") {
         super(name);
+
+        _priority = priority;
     }
 
     // abstract methods
@@ -36,6 +40,8 @@ public class GameActionNode extends Node {
     protected function actionCanceled():void { }
 
     // implemented methods
+
+    public function get priority():int { return _priority; }
 
     public function get autoReset():Boolean { return _autoReset; }
     public function set autoReset(value:Boolean):void { _autoReset = value; }
@@ -58,6 +64,24 @@ public class GameActionNode extends Node {
             actionStarted();
 
             dispatchStartedEvent();
+
+            // finishAction() called - one shot action
+            if(_actionFinished) {
+                actionFinished();
+
+                dispatchFinishedEvent(); // don't dispatch step event
+
+                return;
+            }
+
+            // cancelAction() called - one shot action or e.g. uninitialized
+            else if(_actionCanceled) {
+                actionCanceled();
+
+                dispatchCanceledEvent();
+
+                return;
+            }
         }
 
         while(true) {
