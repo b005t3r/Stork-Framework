@@ -27,7 +27,7 @@ public class GameLoopNode extends ContainerNode {
     protected var _cmp:Comparator       = new GameActionPriorityComparator();
     protected var _needsSorting:Boolean = true;
 
-    public function GameLoopNode(name:String = "GameLoopNode") {
+    public function GameLoopNode(name:String = "GameLoop") {
         super(name);
 
         addEventListener(Event.ADDED_TO_SCENE, onAddedToScene);

@@ -24,7 +24,7 @@ public class GameActionNode extends Node {
     protected var _finishedEvent:GameActionEvent    = new GameActionEvent(GameActionEvent.FINISHED);
     protected var _canceledEvent:GameActionEvent    = new GameActionEvent(GameActionEvent.CANCELED);
 
-    public function GameActionNode(priority:int = int.MAX_VALUE, name:String = "GameActionNode") {
+    public function GameActionNode(priority:int = int.MAX_VALUE, name:String = "GameAction") {
         super(name);
 
         _priority = priority;
