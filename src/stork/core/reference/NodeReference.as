@@ -46,10 +46,10 @@ public class NodeReference extends Reference {
             if(_referenced == null)
                 throw new ArgumentError("referenced property already unset");
 
+            refreshReferenceHandlers(false);
+
             _referenced                 = null;
             _referencing[_propertyName] = null;
-
-            refreshReferenceHandlers(false);
         }
     }
 
