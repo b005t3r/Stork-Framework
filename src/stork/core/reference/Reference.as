@@ -4,8 +4,6 @@
  * Time: 11:42
  */
 package stork.core.reference {
-import flash.system.ApplicationDomain;
-
 import stork.core.Node;
 
 public class Reference {

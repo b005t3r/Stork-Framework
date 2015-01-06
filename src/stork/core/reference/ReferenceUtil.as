@@ -17,8 +17,9 @@ import stork.core.stork_internal;
 use namespace stork_internal;
 
 public class ReferenceUtil {
-    private static var _referenceClasses:Dictionary = new Dictionary(); // referenceTag -> referenceImplClass
-    private static var _referenceData:Dictionary    = new Dictionary(); // nodeClassName -> Vector.<ReferenceData>
+    private static var _referenceClasses:Dictionary     = new Dictionary(); // referenceTag -> referenceImplClass
+    private static var _referenceData:Dictionary        = new Dictionary(); // nodeClassName -> Vector.<ReferenceData>
+    private static var _referenceHandlerData:Dictionary = new Dictionary(); // nodeClassName -> Vector.<ReferenceHandlerData>
 
     // static initializer
     {
@@ -35,32 +36,55 @@ public class ReferenceUtil {
         if(node._references != null)
             throw ArgumentError("node " + node + " already has injected references");
 
-        var className:String            = getQualifiedClassName(node);
-        var refs:Vector.<ReferenceData> = initReferenceData(node, className);
-        var refCount:int                = refs.length;
+        var className:String = getQualifiedClassName(node);
 
-        if(refCount == 0) return;
+        initReferenceData(node, className);
 
-        node._references = new Vector.<Reference>(refCount, true);
+        var refHandlers:Vector.<ReferenceHandlerData>   = _referenceHandlerData[className];
+        var refHandlerCount:int                         = refHandlers.length;
+        var refs:Vector.<ReferenceData>                 = _referenceData[className];
+        var refCount:int                                = refs.length;
 
-        for(var i:int = 0; i < refCount; i++) {
-            var data:ReferenceData = refs[i];
-            var refImplClass:Class = _referenceClasses[data.tag];
+        if(refHandlerCount != 0) {
+            node._referenceHandlers = new Vector.<ReferenceHandler>(refHandlerCount, true);
 
-            node._references[i] = new refImplClass(node, data.propertyName, data.referencePath);
+            for(var i:int = 0; i < refHandlerCount; ++i) {
+                var refHandlerData:ReferenceHandlerData = refHandlers[i];
+
+                node._referenceHandlers[i] = new ReferenceHandler(node[refHandlerData.methodName], refHandlerData.propertyNames);
+            }
+        }
+
+        if(refCount != 0) {
+            node._references = new Vector.<Reference>(refCount, true);
+
+            for(var j:int = 0; j < refCount; ++j) {
+                var refData:ReferenceData = refs[j];
+                var refImplClass:Class = _referenceClasses[refData.tag];
+
+                node._references[j] = new refImplClass(node, refData.propertyName, refData.referencePath);
+            }
         }
     }
 
-    private static function initReferenceData(node:Node, className:String):Vector.<ReferenceData> {
+    private static function initReferenceData(node:Node, className:String):void {
         var refs:Vector.<ReferenceData> = _referenceData[className];
+        var refHandlers:Vector.<ReferenceHandlerData> = _referenceHandlerData[className];
 
         // this class was already processed
-        if(refs != null) return refs;
+        if(refs != null || refHandlers != null) return;
 
+        _referenceHandlerData[className] = refHandlers = new <ReferenceHandlerData>[];
         _referenceData[className] = refs = new <ReferenceData>[];
 
         var typeXML:XML = describeType(node);
         var metadataXML:XML, tag:String;
+
+        // set reference handlers
+        for each (var methodXML:XML in typeXML.method)
+            for each(metadataXML in methodXML.metadata)
+                if(metadataXML.@name == ReferenceHandler.TAG_NAME)
+                    refHandlers[refHandlers.length] = new ReferenceHandlerData(methodXML.@name, metadataXML.arg.@value);
 
         // set variables references
         for each (var variableXML:XML in typeXML.variable)
@@ -75,8 +99,6 @@ public class ReferenceUtil {
                 for(tag in _referenceClasses)
                     if(metadataXML.@name == tag)
                         refs[refs.length] = new ReferenceData(accessorXML.@name, metadataXML.arg.@value, tag);
-
-        return refs;
     }
 }
 }
@@ -90,5 +112,22 @@ class ReferenceData {
         this.propertyName   = propertyName;
         this.referencePath  = referencePath;
         this.tag            = tag;
+    }
+}
+
+class ReferenceHandlerData {
+    private static const replaceWhitespaces:RegExp = /[\s\r\n]+/gim;
+
+    public var methodName:String;
+    public var propertyNames:Vector.<String>;
+
+    public function ReferenceHandlerData(methodName:String, properyNames:String) {
+        this.methodName = methodName;
+        this.propertyNames = new <String>[];
+
+        var names:Array = properyNames.split(",");
+        var count:int = names.length;
+        for(var i:int = 0; i < count; ++i)
+            this.propertyNames[i] = String(names[i]).replace(ReferenceHandlerData.replaceWhitespaces, "");
     }
 }

@@ -7,6 +7,7 @@ package stork.core {
 import flash.utils.getQualifiedClassName;
 
 import stork.core.reference.Reference;
+import stork.core.reference.ReferenceHandler;
 import stork.core.reference.ReferenceUtil;
 import stork.event.EventDispatcher;
 
@@ -14,7 +15,8 @@ public class Node extends EventDispatcher {
     private var _name:String;
     private var _parentNode:ContainerNode;
 
-    stork_internal var _references:Vector.<Reference> = null;
+    stork_internal var _references:Vector.<Reference>               = null;
+    stork_internal var _referenceHandlers:Vector.<ReferenceHandler> = null;
 
     stork_internal var beingAdded:Boolean       = false;
     stork_internal var beingRemoved:Boolean     = false;

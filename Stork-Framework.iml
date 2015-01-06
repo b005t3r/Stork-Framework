@@ -16,7 +16,7 @@
         </dependencies>
         <compiler-options>
           <map>
-            <entry key="compiler.keep-as3-metadata" value="LocalReference&#10;GlobalReference&#10;ObjectReference" />
+            <entry key="compiler.keep-as3-metadata" value="LocalReference&#10;GlobalReference&#10;ObjectReference&#10;OnReferenceChanged" />
           </map>
         </compiler-options>
         <packaging-air-desktop />

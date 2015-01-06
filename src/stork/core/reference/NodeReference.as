@@ -39,6 +39,8 @@ public class NodeReference extends Reference {
 
             _referenced                 = value;
             _referencing[_propertyName] = value;
+
+            refreshReferenceHandlers(true);
         }
         else {
             if(_referenced == null)
@@ -46,6 +48,24 @@ public class NodeReference extends Reference {
 
             _referenced                 = null;
             _referencing[_propertyName] = null;
+
+            refreshReferenceHandlers(false);
+        }
+    }
+
+    protected function refreshReferenceHandlers(isSet:Boolean):void {
+        if(_referencing.stork_internal::_referenceHandlers == null)
+            return;
+
+        var count:int = _referencing.stork_internal::_referenceHandlers.length;
+
+        for(var i:int = 0; i < count; ++i) {
+            var handler:ReferenceHandler = _referencing.stork_internal::_referenceHandlers[i];
+
+            if(!handler.isObservingProperty(_propertyName))
+                continue;
+
+            handler.propertyChanged(_propertyName, isSet);
         }
     }
 
