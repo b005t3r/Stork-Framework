@@ -5,7 +5,10 @@
  */
 package stork.core.reference {
 import stork.core.Node;
+import stork.core.stork_internal;
 import stork.event.Event;
+
+use namespace stork_internal;
 
 public class LocalReference extends NodeReference {
     public static const TAG_NAME:String = "LocalReference";
@@ -14,35 +17,35 @@ public class LocalReference extends NodeReference {
         super(referencing, propertyName, path);
 
         if(_referencing.parentNode == null) {
-            _referencing.addEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
+            _referencing.stork_internal::addReferenceEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
         }
         else {
-            _referencing.addEventListener(Event.REMOVED_FROM_PARENT, onReferencingRemovedFromParent);
+            _referencing.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencingRemovedFromParent);
 
             var node:Node = findReferencedNode(_referencing.parentNode);
 
             if(node == null) {
-                _referencing.parentNode.addEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+                _referencing.parentNode.stork_internal::addReferenceEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
             }
             else {
                 setReferenced(node);
 
-                node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
-                node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene)
+                node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+                node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene)
             }
         }
     }
 
     override public function dispose():void {
-        _referencing.removeEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
-        _referencing.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencingRemovedFromParent);
+        _referencing.stork_internal::removeReferenceEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
+        _referencing.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencingRemovedFromParent);
 
         if(_referencing.parentNode != null)
-            _referencing.parentNode.removeEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+            _referencing.parentNode.stork_internal::removeReferenceEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
 
         if(_referenced != null) {
-            _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
-            _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+            _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
         }
 
         super.dispose();
@@ -52,19 +55,19 @@ public class LocalReference extends NodeReference {
         if(event.target != _referencing)
             return;
 
-        _referencing.removeEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
-        _referencing.addEventListener(Event.REMOVED_FROM_PARENT, onReferencingRemovedFromParent);
+        _referencing.stork_internal::removeReferenceEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
+        _referencing.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencingRemovedFromParent);
 
         var node:Node = findReferencedNode(_referencing.parentNode);
 
         if(node == null) {
-            _referencing.parentNode.addEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+            _referencing.parentNode.stork_internal::addReferenceEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
         }
         else {
             setReferenced(node);
 
-            node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
-            node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+            node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
         }
     }
 
@@ -72,16 +75,16 @@ public class LocalReference extends NodeReference {
         if(event.target != _referencing)
             return;
 
-        _referencing.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencingRemovedFromParent);
-        _referencing.parentNode.removeEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+        _referencing.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencingRemovedFromParent);
+        _referencing.parentNode.stork_internal::removeReferenceEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
 
         if(_referenced != null) {
-            _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
-            _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+            _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
             setReferenced(null);
         }
 
-        _referencing.addEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
+        _referencing.stork_internal::addReferenceEventListener(Event.ADDED_TO_PARENT, onReferencingAddedToParent);
     }
 
     private function onSomethingAddedToParent(event:Event):void {
@@ -93,33 +96,33 @@ public class LocalReference extends NodeReference {
         if(node == null)
             return;
 
-        _referencing.parentNode.removeEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+        _referencing.parentNode.stork_internal::removeReferenceEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
 
         setReferenced(node);
 
-        node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
-        node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+        node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+        node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
     }
 
     private function onReferencedRemovedFromParent(event:Event):void {
         if(event.target != _referenced)
             return;
 
-        _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
-        _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene)
+        _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+        _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene)
 
         var node:Node = findReferencedNode(_referencing.parentNode);
 
         setReferenced(null);
 
         if(node == null) {
-            _referencing.parentNode.addEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+            _referencing.parentNode.stork_internal::addReferenceEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
         }
         else {
             setReferenced(node);
 
-            node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
-            node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+            node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
         }
     }
 
@@ -130,20 +133,20 @@ public class LocalReference extends NodeReference {
             return;
 
         if(node != _referenced) {
-            _referenced.removeEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
-            _referenced.removeEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+            _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
 
             setReferenced(null);
         }
 
         if(node == null) {
-            _referencing.parentNode.addEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
+            _referencing.parentNode.stork_internal::addReferenceEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToParent);
         }
         else {
             setReferenced(node);
 
-            node.addEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
-            node.addEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+            node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_PARENT, onReferencedRemovedFromParent);
+            node.stork_internal::addReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
         }
     }
 }
