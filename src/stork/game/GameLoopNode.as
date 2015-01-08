@@ -84,8 +84,6 @@ public class GameLoopNode extends ContainerNode {
 
             if(action.autoReset && (action.finished || action.canceled)) {
                 action.reset(); // removes from game loop
-                --i;            // adjust next index & count after removing action
-                --count;
             }
         }
 
