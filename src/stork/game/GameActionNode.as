@@ -5,7 +5,11 @@
  */
 package stork.game {
 import stork.core.Node;
+import stork.core.reference.ReferenceUtil;
+import stork.core.stork_internal;
 import stork.event.game.GameActionEvent;
+
+use namespace stork_internal;
 
 public class GameActionNode extends Node {
     private var _priority:int;
@@ -161,8 +165,8 @@ public class GameActionNode extends Node {
         _stepTime       = 0;
         _currentStep    = 0;
 
-        removeEventListeners();
         removeFromParent();
+        removeEventListeners();
     }
 
     protected function finishStep(dt:Number):void { _stepFinishedDt = dt; }
