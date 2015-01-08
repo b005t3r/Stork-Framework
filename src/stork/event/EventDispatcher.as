@@ -121,7 +121,7 @@ public class EventDispatcher implements IEventDispatcher {
             return referenceListeners != null ? referenceListeners.length != 0 : false;
         }
         else {
-            return false;
+            return true;
         }
     }
 
