@@ -187,10 +187,14 @@ public class ObjectReference extends Reference {
 
             _referenced                 = value;
             _referencing[_propertyName] = value;
+
+            refreshReferenceHandlers(true);
         }
         else {
             if(_referenced == null)
                 throw new ArgumentError("referenced property already unset");
+
+            refreshReferenceHandlers(false);
 
             _referenced                 = null;
             _referencing[_propertyName] = null;
