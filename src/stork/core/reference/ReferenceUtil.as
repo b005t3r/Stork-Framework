@@ -8,10 +8,7 @@ import flash.utils.Dictionary;
 import flash.utils.describeType;
 import flash.utils.getQualifiedClassName;
 
-import stork.core.ContainerNode;
-
 import stork.core.Node;
-
 import stork.core.stork_internal;
 
 use namespace stork_internal;

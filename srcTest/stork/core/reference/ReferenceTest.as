@@ -7,7 +7,6 @@ package stork.core.reference {
 import org.flexunit.asserts.assertEquals;
 
 import stork.core.ContainerNode;
-
 import stork.core.SceneNode;
 import stork.core.reference.test.PublicReferencedNode;
 

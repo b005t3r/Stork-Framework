@@ -4,7 +4,6 @@
  * Time: 9:57
  */
 package stork.core {
-import stork.core.reference.ReferenceUtil;
 import stork.event.Event;
 
 public class ContainerNode extends Node {

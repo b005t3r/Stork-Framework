@@ -12,9 +12,8 @@ import medkit.object.Comparator;
 import stork.core.ContainerNode;
 import stork.core.Node;
 import stork.event.Event;
-import stork.event.game.GameActionEvent;
-import stork.event.game.GameLoopEvent;
 import stork.event.SceneStepEvent;
+import stork.event.game.GameLoopEvent;
 
 public class GameLoopNode extends ContainerNode {
     private var _preLoopEvent:GameLoopEvent = new GameLoopEvent(GameLoopEvent.PRE_LOOP);

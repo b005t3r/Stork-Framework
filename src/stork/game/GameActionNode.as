@@ -5,7 +5,6 @@
  */
 package stork.game {
 import stork.core.Node;
-import stork.core.reference.ReferenceUtil;
 import stork.core.stork_internal;
 import stork.event.game.GameActionEvent;
 
