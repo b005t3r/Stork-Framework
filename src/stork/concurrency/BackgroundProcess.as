@@ -9,6 +9,7 @@ import flash.system.Worker;
 
 import stork.concurrency.communication.BackgroundCommunicationChannel;
 import stork.concurrency.communication.ICommunicationChannel;
+import stork.concurrency.communication.SharingMode;
 
 public class BackgroundProcess extends Sprite {
     private var _commChannel:ICommunicationChannel;
@@ -24,12 +25,12 @@ public class BackgroundProcess extends Sprite {
         _commChannel.createMessageChannel(channelID, channelMessageHandler);
     }
 
-    protected final function send(channelID:String, payload:*, serialize:Boolean):void {
-        _commChannel.send(channelID, payload, serialize);
+    protected final function send(channelID:String, payload:*, sharingMode:SharingMode):void {
+        _commChannel.send(channelID, payload, sharingMode);
     }
 
-    protected final function receive(channelID:String, deserialize:Boolean):* {
-        return _commChannel.receive(channelID, deserialize);
+    protected final function receive(channelID:String, sharingMode:SharingMode):* {
+        return _commChannel.receive(channelID, sharingMode);
     }
 }
 }

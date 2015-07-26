@@ -6,7 +6,7 @@
 package stork.concurrency.communication {
 public interface ICommunicationChannel {
     function createMessageChannel(channelID:String, channelMessageHandler:Function = null):void
-    function send(channelID:String, payload:*, serialize:Boolean):void
-    function receive(channelID:String, deserialize:Boolean):*
+    function send(channelID:String, payload:*, mode:SharingMode):void
+    function receive(channelID:String, mode:SharingMode):*
 }
 }

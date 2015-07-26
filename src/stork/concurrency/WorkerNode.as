@@ -17,6 +17,7 @@ import flash.system.WorkerState;
 
 import stork.concurrency.communication.BackgroundCommunicationChannel;
 import stork.concurrency.communication.ICommunicationChannel;
+import stork.concurrency.communication.SharingMode;
 import stork.core.Node;
 import stork.event.concurrency.WorkerEvent;
 
@@ -86,12 +87,12 @@ public class WorkerNode extends Node {
         _commChannel.createMessageChannel(channelID, channelMessageHandler);
     }
 
-    protected final function send(channelID:String, payload:*, serialize:Boolean):void {
-        _commChannel.send(channelID, payload, serialize);
+    protected final function send(channelID:String, payload:*, sharingMode:SharingMode):void {
+        _commChannel.send(channelID, payload, sharingMode);
     }
 
-    protected final function receive(channelID:String, deserialize:Boolean):* {
-        return _commChannel.receive(channelID, deserialize);
+    protected final function receive(channelID:String, sharingMode:SharingMode):* {
+        return _commChannel.receive(channelID, sharingMode);
     }
 
     private function onWorkerStateChanged(event:Event):void {

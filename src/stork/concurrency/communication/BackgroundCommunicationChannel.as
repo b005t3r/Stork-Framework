@@ -56,13 +56,13 @@ public class BackgroundCommunicationChannel implements ICommunicationChannel {
         }
     }
 
-    public function send(channelID:String, payload:*, serialize:Boolean):void {
+    public function send(channelID:String, payload:*, mode:SharingMode):void {
         var channel:MessageChannel = _worker != null ? _mainToWorkerChannels.get(channelID) : _workerToMainChannels.get(channelID);
 
         if(channel == null)
             throw new ArgumentError("channel '" + channelID + "' is does not exist");
 
-        if(serialize) {
+        if(mode == SharingMode.Serialize) {
             var oos:ObjectOutputStream = new ObjectOutputStream();
             oos.writeObject(payload, "payload");
             payload = oos.jsonData;
@@ -71,7 +71,7 @@ public class BackgroundCommunicationChannel implements ICommunicationChannel {
         channel.send(payload);
     }
 
-    public function receive(channelID:String, deserialize:Boolean):* {
+    public function receive(channelID:String, mode:SharingMode):* {
         var channel:MessageChannel = _worker != null ? _workerToMainChannels.get(channelID) : _mainToWorkerChannels.get(channelID);
 
         if(channel == null)
@@ -79,7 +79,7 @@ public class BackgroundCommunicationChannel implements ICommunicationChannel {
 
         var payload:* = channel.receive(true);
 
-        if(deserialize) {
+        if(mode == SharingMode.Serialize) {
             var ois:ObjectInputStream = new ObjectInputStream(payload);
             payload = ois.readObject("payload");
         }
