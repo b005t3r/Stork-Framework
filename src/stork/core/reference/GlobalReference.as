@@ -9,6 +9,8 @@ import flash.utils.getDefinitionByName;
 import medkit.object.ObjectUtil;
 
 import stork.core.ContainerNode;
+
+import stork.core.ContainerNode;
 import stork.core.Node;
 import stork.core.SceneNode;
 import stork.core.stork_internal;
@@ -116,7 +118,7 @@ public class GlobalReference extends NodeReference {
     }
 
     private function findRootNode():ContainerNode {
-        var parent:ContainerNode = _referencing.parentNode;
+        var parent:ContainerNode = _referencing is ContainerNode ? ContainerNode(_referencing) : _referencing.parentNode;
 
         while(parent != null) {
             if(_rootType == CLASS) {
