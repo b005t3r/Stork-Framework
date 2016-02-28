@@ -29,6 +29,9 @@ public class WorkerNode extends Node {
     private var _startedEvent:WorkerEvent       = new WorkerEvent(WorkerEvent.STARTED);
     private var _terminatedEvent:WorkerEvent    = new WorkerEvent(WorkerEvent.TERMINATED);
 
+    private var _receivingMessage:Boolean;
+    private var _receiveCalled:Boolean;
+
     public function WorkerNode(name:String = "Worker") {
         super(name);
     }
@@ -84,7 +87,15 @@ public class WorkerNode extends Node {
         if(! _creatingChannels)
             throw new UninitializedError("channels can only be created using createBackgroundWorker() method");
 
-        _commChannel.createMessageChannel(channelID, channelMessageHandler);
+        _commChannel.createMessageChannel(channelID, channelMessageHandler == null ? null : function():void {
+            _receivingMessage = true;
+            _receiveCalled = false;
+
+            channelMessageHandler();
+
+            _receivingMessage = false;
+            _receiveCalled = false;
+        });
     }
 
     protected final function send(channelID:String, payload:*, sharingMode:SharingMode):void {
@@ -92,6 +103,13 @@ public class WorkerNode extends Node {
     }
 
     protected final function receive(channelID:String, sharingMode:SharingMode):* {
+        if(! _receivingMessage)
+            throw new Error("receive() can only be called inside a message channel handler function");
+
+        if(_receiveCalled)
+            throw new Error("receive() already called on this message channel handler call - wait for the next message to call it again");
+
+        _receiveCalled = true;
         return _commChannel.receive(channelID, sharingMode);
     }
 
