@@ -182,12 +182,16 @@ public class GlobalReference extends NodeReference {
     }
 
     private function onReferencedRemovedFromScene(event:Event):void {
+        if(_referenced == null) {
+            trace("WARNING: onReferencedRemovedFromScene() called while _referenced == null")
+            return;
+        }
+
         _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
+        setReferenced(null);
 
         var sceneNode:SceneNode = _referencing.sceneNode;
         var node:Node           = findReferencedNode(sceneNode);
-
-        setReferenced(null);
 
         if(node == null) {
             sceneNode.stork_internal::addReferenceEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToScene);
