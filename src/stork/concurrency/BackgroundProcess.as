@@ -18,7 +18,7 @@ public class BackgroundProcess extends Sprite {
         if(! Worker.current.isPrimordial)
             _commChannel = new BackgroundCommunicationChannel(null);
         else
-            throw new Error("foreground execution not supported");
+            trace("foreground execution not supported for workers - doing nothing");
     }
 
     protected final function createMessageChannel(channelID:String, channelMessageHandler:Function = null):void {
