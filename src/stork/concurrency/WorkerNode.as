@@ -4,6 +4,7 @@
  * Time: 17:21
  */
 package stork.concurrency {
+import flash.display.Loader;
 import flash.errors.IOError;
 import flash.errors.IllegalOperationError;
 import flash.events.Event;
@@ -11,6 +12,8 @@ import flash.events.IOErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
+import flash.system.ApplicationDomain;
+import flash.system.LoaderContext;
 import flash.system.Worker;
 import flash.system.WorkerDomain;
 import flash.system.WorkerState;
@@ -50,15 +53,27 @@ public class WorkerNode extends Node {
         if(_commChannel != null)
             throw new IllegalOperationError("worker already started");
 
+/*
         var loader:URLLoader    = new URLLoader();
         loader.dataFormat       = URLLoaderDataFormat.BINARY;
 
         loader.addEventListener(Event.COMPLETE, onLoadComplete);
         loader.addEventListener(IOErrorEvent.IO_ERROR, onLoadIOError);
         loader.load(new URLRequest(swfPath));
+ */
+
+        var urlRequest:URLRequest   = new URLRequest(swfPath);
+        var loader:Loader           = new Loader();
+        var lc:LoaderContext        = new LoaderContext(false, ApplicationDomain.currentDomain, null);
+
+        //adding event handler
+        loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadComplete);
+        loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onLoadIOError);
+        loader.load(urlRequest, lc);
 
         function onLoadComplete(event:Event):void {
-            _worker         = WorkerDomain.current.createWorker(event.target.data);
+            //_worker         = WorkerDomain.current.createWorker(event.target.data);
+            _worker         = WorkerDomain.current.createWorker(event.target.bytes);
             _commChannel    = new BackgroundCommunicationChannel(_worker);
 
             if(createMessageChannelsBlock != null) {
