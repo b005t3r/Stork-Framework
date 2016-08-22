@@ -50,7 +50,7 @@ public class ContainerNode extends Node {
                 if(sceneNode) {
                     var container:ContainerNode = node as ContainerNode;
 
-                    if(container != null)   container.broadcastEvent(_addedToSceneEvent.reset());
+                    if(container != null)   container.broadcastEvent(_addedToSceneEvent.reset(), false);
                     else                    node.dispatchEvent(_addedToSceneEvent.reset());
                 }
 
@@ -81,7 +81,7 @@ public class ContainerNode extends Node {
             if(sceneNode) {
                 var container:ContainerNode = node as ContainerNode;
 
-                if(container != null)   container.broadcastEvent(_removedFromSceneEvent.reset());
+                if(container != null)   container.broadcastEvent(_removedFromSceneEvent.reset(), true);
                 else                    node.dispatchEvent(_removedFromSceneEvent.reset());
             }
 
@@ -170,7 +170,7 @@ public class ContainerNode extends Node {
     }
 
     /** Dispatches an event with the given parameters on all children (recursively). */
-    public function broadcastEvent(event:Event):void {
+    public function broadcastEvent(event:Event, bottomUp:Boolean):void {
         if(event.bubbles)
             throw new ArgumentError("Broadcast of bubbling events is prohibited");
 
@@ -180,7 +180,7 @@ public class ContainerNode extends Node {
         // care that the static helper vector does not get corrupted.
 
         var fromIndex:int = _broadcastListeners.length;
-        getChildEventListeners(this, event.type, _broadcastListeners);
+        getChildEventListeners(this, event.type, _broadcastListeners, bottomUp);
         var toIndex:int = _broadcastListeners.length;
 
         for(var i:int = fromIndex; i < toIndex; ++i)
@@ -189,10 +189,10 @@ public class ContainerNode extends Node {
         _broadcastListeners.length = fromIndex;
     }
 
-    internal function getChildEventListeners(object:Node, eventType:String, listeners:Vector.<Node>):void {
+    internal function getChildEventListeners(object:Node, eventType:String, listeners:Vector.<Node>, bottomUp:Boolean):void {
         var container:ContainerNode = object as ContainerNode;
 
-        if(object.hasEventListener(eventType))
+        if(! bottomUp && object.hasEventListener(eventType))
             listeners[listeners.length] = object; // avoiding 'push'
 
         if(container) {
@@ -200,8 +200,11 @@ public class ContainerNode extends Node {
             var numChildren:int = children.length;
 
             for(var i:int = 0; i < numChildren; ++i)
-                getChildEventListeners(children[i], eventType, listeners);
+                getChildEventListeners(children[i], eventType, listeners, bottomUp);
         }
+
+        if(bottomUp && object.hasEventListener(eventType))
+            listeners[listeners.length] = object; // avoiding 'push'
     }
 }
 }
