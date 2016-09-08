@@ -158,13 +158,15 @@ public class ContainerNode extends Node {
         if(nodes == null) nodes = new <Node>[];
 
         var count:int = _nodes.length;
-        for(var i:int = 0; i < count; ++i)
+        for(var i:int = 0; i < count; ++i) {
             var n:Node = _nodes[i];
 
-            if(n is nodeClass)
-                nodes[nodes.length] = n;
-            else if(recursive && n is ContainerNode)
+            if (recursive && n is ContainerNode)
                 (n as ContainerNode).getNodesByClass(nodeClass, nodes, true);
+
+            if (n is nodeClass)
+                nodes[nodes.length] = n;
+        }
 
         return nodes;
     }
