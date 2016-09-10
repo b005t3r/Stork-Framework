@@ -97,16 +97,16 @@ public class GlobalReference extends NodeReference {
         super.dispose();
     }
 
-    override protected function findReferencedNode(container:ContainerNode):Node {
+    override protected function findReferencedNode(container:ContainerNode, nodeToIgnore:Node = null):Node {
         var sceneNode:SceneNode = container as SceneNode;
 
         if(sceneNode == null)
             throw new ArgumentError("SceneNode has to be passed as 'container' to findReferencedNode() for GlobalReferences");
 
         if(! _relativeToRoot)
-            return super.findReferencedNode(sceneNode);
+            return super.findReferencedNode(sceneNode, nodeToIgnore);
 
-        var rootNode:ContainerNode = findRootNode();
+        var rootNode:ContainerNode = findRootNode(nodeToIgnore);
 
         if(rootNode == null)
             return null;
@@ -114,19 +114,19 @@ public class GlobalReference extends NodeReference {
         if(_compiledSegments.length == 0)
             return rootNode;
 
-        return super.findReferencedNode(rootNode);
+        return super.findReferencedNode(rootNode, nodeToIgnore);
     }
 
-    private function findRootNode():ContainerNode {
+    private function findRootNode(nodeToIgnore:Node):ContainerNode {
         var parent:ContainerNode = _referencing is ContainerNode ? ContainerNode(_referencing) : _referencing.parentNode;
 
         while(parent != null) {
             if(_rootType == CLASS) {
-                if(parent is (_rootValue as Class))
+                if(parent is (_rootValue as Class) && parent != nodeToIgnore)
                     return parent;
             }
             else {
-                if(parent.name == (_rootValue as String))
+                if(parent.name == (_rootValue as String) && parent != nodeToIgnore)
                     return parent;
             }
 
@@ -188,10 +188,11 @@ public class GlobalReference extends NodeReference {
         }
 
         _referenced.stork_internal::removeReferenceEventListener(Event.REMOVED_FROM_SCENE, onReferencedRemovedFromScene);
-        setReferenced(null);
 
         var sceneNode:SceneNode = _referencing.sceneNode;
-        var node:Node           = findReferencedNode(sceneNode);
+        var node:Node = findReferencedNode(sceneNode, _referenced);
+
+        setReferenced(null);
 
         if(node == null) {
             sceneNode.stork_internal::addReferenceEventListener(Event.ADDED_TO_PARENT, onSomethingAddedToScene);

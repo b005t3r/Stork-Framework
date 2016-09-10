@@ -23,8 +23,8 @@ public class NodeReference extends Reference {
         compile();
     }
 
-    protected function findReferencedNode(container:ContainerNode):Node {
-        var node:Node = findReferencedNodeImpl(container, 0);
+    protected function findReferencedNode(container:ContainerNode, nodeToIgnore:Node = null):Node {
+        var node:Node = findReferencedNodeImpl(container, 0, nodeToIgnore);
 
         return node;
     }
@@ -84,7 +84,7 @@ public class NodeReference extends Reference {
         }
     }
 
-    private function findReferencedNodeImpl(container:ContainerNode, segmentIndex:int):Node {
+    private function findReferencedNodeImpl(container:ContainerNode, segmentIndex:int, nodeToIgnore:Node):Node {
         use namespace stork_internal;
 
         var segment:CompiledReferenceSegment = _compiledSegments[segmentIndex];
@@ -93,7 +93,7 @@ public class NodeReference extends Reference {
         for(var i:int = 0; i < count; i++) {
             var node:Node = container.getNodeAt(i);
 
-            if(node.beingRemoved || ! segment.matches(node))
+            if(node.beingRemoved || ! segment.matches(node) || node == nodeToIgnore)
                 continue;
 
             // last segment
@@ -102,7 +102,7 @@ public class NodeReference extends Reference {
             }
             // middle segment, has to be a ContainerNode
             else {
-                var nextNode:Node = findReferencedNodeImpl(node as ContainerNode, segmentIndex + 1);
+                var nextNode:Node = findReferencedNodeImpl(node as ContainerNode, segmentIndex + 1, nodeToIgnore);
 
                 if(nextNode != null)
                     return nextNode;
